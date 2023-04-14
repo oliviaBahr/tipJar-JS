@@ -502,7 +502,7 @@ function initMessenger() {
       messageBox.top = '46%'
       messageBox.left = '13%'
       screen.append(messageBox);
-      messageBox.log(`{center}you need to enter a command if you want to you use box dummy{/center}`, 3);
+      messageBox.log(`{center}you need to enter a command if you want to you use this box dummy{/center}`, 3);
    }
 
    function tipExists() {
