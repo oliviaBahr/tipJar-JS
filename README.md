@@ -11,6 +11,7 @@ this is a place where you can store useful links, helpful life hacks, cool quote
 <br>
 
 this is an indie project (that's pretty obvious) done only by me. contributions are welcome! please see issues if you're interested in helping my noble cause.
+please use lower case only because we are cool.
 
 <br>
 <br>
