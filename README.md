@@ -5,6 +5,7 @@ you know those random bits of information you come across that you feel like you
 do you have a bunch of three line txt files cluttering your desktop with no way to search through them?
 
 #### this is a place where you can store useful links, helpful life hacks, cool quotes, and random bits of information you have nowhere to put... a.k.a tips!
+it runs directly in a terminal window so you can feel like a hacker even though you're probably not.
 
 <br>
 
