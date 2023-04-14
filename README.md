@@ -14,7 +14,8 @@ please use lower case only (because this is cool people repo).
 <br>
 #### the beta will be published with npm very soon!
 
-for now, here are the dependencies you need to run the program
+for now, navigate to the folder then run ```node controller.mjs``` to start the program.\
+here are the dependencies you need
 - [node](https://github.com/nodejs/node)
 - [blessed](https://github.com/chjj/blessed)
 - [figlet](https://github.com/cmatsuoka/figlet)
