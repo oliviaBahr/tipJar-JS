@@ -8,7 +8,7 @@ do you have a bunch of three line txt files cluttering your desktop with no way 
 
 <br>
 
-this is an indie project (that's pretty obvious) done only by me. contributions are welcome! please see issues if you're interested in helping my noble cause.\
+this is an indie project done only by me. contributions are welcome! please see issues if you're interested in helping my noble cause.\
 please use lower case only (because this is cool people repo).
 <br>
 <br>
