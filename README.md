@@ -29,5 +29,5 @@ blessed is the main dependency for this project. its last commit was in 2016, so
 ### info about spacing
 
 blessed works with terminal rows and columns for spacing. this means that if your terminal is too big or too small the spacing of buttons and boxes will be weird.\
-i'm currently working on a way to adjust the spacing based on it terminal size so it will always look good.\
+i'm currently working on a way to adjust the spacing based on terminal size so it will always look good.\
 for now, just resize your terminal window and the spacing will dynamically update.
