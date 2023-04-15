@@ -10,7 +10,7 @@ it runs directly in a terminal window so you can feel like a hacker even though 
 <img src="assets/tipJarWelcomeScreen.png" width="512"/>
 <br>
 
-this is an indie project done only by me. contributions are welcome! please see issues if you're interested in helping my noble cause.\
+this is a solo indie project so contributions are welcome! please see issues if you're interested in helping my noble cause.\
 please use lower case only (because this is cool people repo).
 <br>
 <br>
