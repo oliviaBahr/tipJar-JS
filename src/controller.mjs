@@ -105,7 +105,7 @@ function initSwitcher() {
       screen.render();
    }
 
-   function switchToHelp(){
+   function switchToHelp() {
       currBox.detach();
       currBox = helpBox;
       screen.append(helpBox);
@@ -192,6 +192,14 @@ function initInputter() {
             menu.createButton.press();
             return;
 
+         case 'home':
+            menu.homeButton.press();
+            return;
+
+         case 'help':
+            menu.helpButton.press();
+            return;
+            
          case 'tags':
             logger.logTags();
             return;
@@ -370,7 +378,7 @@ function initTipMaker() {
 
 function initLogger() {
 
-   function logHelp(box){
+   function logHelp(box) {
       box.log();
       box.log('when you print tips, it will show the tip contents and an index.')
       box.log('you can reference a tip using its name or its index in the list')
