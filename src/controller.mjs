@@ -328,13 +328,23 @@ function initSearcher() {
 function initTipMaker() {
 
    function end() {
-      newTipFields.nameBox.setContent();
-      newTipFields.descriptionBox.setContent();
-      newTipFields.tagsBox.setContent();
-      newTipFields.linksBox.setContent();
+      newTipFields.nameBox.setValue('');
+      newTipFields.descriptionBox.setValue('');
+      newTipFields.tagsBox.setValue('');
+      newTipFields.linksBox.setValue('');
       onNewTipScreen = false;
       fromEdit = false;
-      switcher.switchToHome();
+
+      //this is literally the switcher.switchToHome() function but with append and detach the input box
+      //this fixes the letter doubling issue but im not sure why
+      currBox.detach();
+      currBox = homeBox;
+      screen.append(homeBox);
+      inputBox.detach();
+      screen.append(inputBox);
+      focuser.focusDefault();
+      homeBox.setContent(`{center}${figlet.textSync('home', {})}{/center}`);
+      screen.render();
    }
 
    function saveTip() {
@@ -560,7 +570,7 @@ function setNavListeners() {
       screen.on('element keypress', (el, ch, key) => {
          switch (key.name) {
             case 'escape':
-               if (onNewTipScreen) { tipMaker.end(); focuser.focusDefault(); return; }
+               if (onNewTipScreen) { tipMaker.end(); return; }
                else if (screen.focused === logBox) { focuser.focusDefault(); return; }
                else if (screen.focused === inputBox) { focuser.focusMenuBox(); return; }
                else { screen.destroy(); return process.exit(0); }
@@ -643,7 +653,8 @@ function setNavListeners() {
                return;
 
             case 'enter':
-               if (screen.focused !== newTipFields.saveButton) { screen.focusNext(); return; }
+               if (screen.focused !== newTipFields.saveButton) { screen.focusNext(); }
+               return;
          }
       });
    }
