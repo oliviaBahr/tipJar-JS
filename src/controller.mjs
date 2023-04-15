@@ -162,6 +162,7 @@ function initFocuser() {
    }
 }
 
+//TODO: implement to resize boxes based on terminal size
 function initTerminalUtils() {
 
    function getColumns() {
@@ -199,7 +200,11 @@ function initInputter() {
          case 'help':
             menu.helpButton.press();
             return;
-            
+
+         case 'random':
+            menu.randomButton.press();
+            return;
+         
          case 'tags':
             logger.logTags();
             return;
@@ -388,6 +393,9 @@ function initLogger() {
       box.log('edit [name or index] - edit a tip');
       box.log('delete [name or index] - delete a tip');
       box.log('search [query] - search for a tip');
+      box.log('random - get a random tip');
+      box.log('home - go to the home screen');
+      box.log('help - show this help message');
    }
 
    function clear() {
@@ -416,7 +424,7 @@ function initLogger() {
       logBox.log(`Name: ${tip.name}`);
       if (tip.description.length > 0) { logBox.log(`Description: ${tip.description}`); }
       if (![...tip.tags].includes('')) { logBox.log(`Tags: ${[...tip.tags]}`); }
-      if (![...tip.links].includes('')) { logBox.log(`Tags: ${[...tip.links]}`); }
+      if (![...tip.links].includes('')) { logBox.log(`links: ${[...tip.links]}`); }
       logBox.log();
    }
 
