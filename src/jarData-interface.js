@@ -1,7 +1,7 @@
 #! /usr/bin/env node;
 
 const fs = require('fs')
-const dataFile = './jarData.json';
+const dataFile = 'src/jarData.json';
 
 class Jar {
 	constructor() {
