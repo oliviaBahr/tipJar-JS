@@ -201,10 +201,20 @@ function initInputter() {
             menu.helpButton.press();
             return;
 
+         case 'search':
+            if (!args[1]) {
+               messenger.noTipSpecified('search for');
+            } else {
+               const matchingTips = searcher.search(args[1], jar.tipsArray);
+               switcher.switchToLogBox();
+               logger.logTipArray(matchingTips);
+            }
+            return;
+
          case 'random':
             menu.randomButton.press();
             return;
-         
+
          case 'tags':
             logger.logTags();
             return;
@@ -286,21 +296,12 @@ function initSearcher() {
       let push = false;
 
       for (let tip of tipArray) {
-         if (tip.name.toLowerCase().includes(query)) {
-            push = true;
-         }
-         if (tip.description.toLowerCase().includes(query)) {
-            push = true;
-         }
-         if (tip.tags.has(query)) {
-            push = true;
-         }
-         if (tip.links.has(query)) {
-            push = true;
-         }
-         if (push) {
-            matchingTips.push(tip);
-         }
+         if (tip.name.toLowerCase().includes(query)) { push = true; }
+         else if (tip.description.toLowerCase().includes(query)) { push = true; }
+         else if (tip.tags.has(query)) { push = true; }
+         else if (tip.links.has(query)) { push = true; }
+
+         if (push) { matchingTips.push(tip); }
          push = false;
       }
       return matchingTips;
