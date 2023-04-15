@@ -244,7 +244,7 @@ class NewTipMod {
          style: { focus: { border: { fg: 'magenta' } } }
       });
 
-      this.descriptionBox = blessed.textbox({
+      this.descriptionBox = blessed.textarea({
          label: 'Description',
          name: 'descriptionBox',
 
@@ -266,7 +266,7 @@ class NewTipMod {
          }
       });
 
-      this.tagsBox = blessed.textbox({
+      this.tagsBox = blessed.textarea({
          label: 'Tags',
          name: 'tagsBox',
 
