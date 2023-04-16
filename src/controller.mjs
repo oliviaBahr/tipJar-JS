@@ -72,7 +72,7 @@ function initSwitcher() {
             currBox.detach();
             currBox = homeBox;
             screen.append(homeBox);
-            defaultFocusBox.focus();
+            input.reset();
             homeBox.setContent(`{center}${figlet.textSync('home', {})}{/center}`);
             screen.render();
          }, logDelay);
@@ -80,7 +80,7 @@ function initSwitcher() {
          currBox.detach();
          currBox = homeBox;
          screen.append(homeBox);
-         defaultFocusBox.focus();
+         input.reset();
          homeBox.setContent(`{center}${figlet.textSync('home', {})}{/center}`);
          screen.render();
       }
@@ -93,6 +93,7 @@ function initSwitcher() {
       screen.append(logBox);
       logMod.mainBox.focus();
       logBox.setContent('');
+      input.reset();
       screen.render();
    }
 
@@ -101,7 +102,7 @@ function initSwitcher() {
       onNewTipScreen = true;
       currBox = newTipBox;
       screen.append(newTipBox);
-      newTipFields.nameBox.focus();
+      focuser.focusNameBox();
       screen.render();
    }
 
@@ -111,6 +112,7 @@ function initSwitcher() {
       screen.append(helpBox);
       logger.figLog(helpBox, 'help');
       logger.logHelp(helpBox);
+      input.reset();
       screen.render();
    }
 
@@ -127,15 +129,18 @@ function initFocuser() {
    function focusMenuBox(button) {
       if (button === 'bottom') { menu.bottom.focus(); }
       else { menu.top.focus(); }
-      screen.render();
    }
 
    function focusInputBox() {
-      inputter.mainBox.focus();
+      inputBox.focus();
    }
 
    function focusDefault() {
       defaultFocusBox.focus();
+   }
+
+   function focusNameBox(){
+      newTipFields.nameBox.focus();
    }
 
    function focusCurrBox() {
@@ -145,7 +150,7 @@ function initFocuser() {
             break;
 
          case newTipBox:
-            newTipFields.nameBox.focus();;
+            focuser.focusNewTip();
             break;
 
          case homeBox:
@@ -158,7 +163,8 @@ function initFocuser() {
       focusMenuBox,
       focusInputBox,
       focusDefault,
-      focusCurrBox
+      focusCurrBox,
+      focusNameBox
    }
 }
 
@@ -180,13 +186,16 @@ function initTerminalUtils() {
 
 function initInputter() {
 
-   function clear() {
+   function reset() {
       inputBox.setValue('');
+      inputBox.detach();
+      screen.append(inputBox);
+      screen.render();
    }
 
    function handleCommand(command) {
-      clear();
       const args = command.split(' ');
+      reset();
 
       switch (args[0]) {
          case 'create':
@@ -195,15 +204,18 @@ function initInputter() {
 
          case 'home':
             menu.homeButton.press();
+            focuser.focusInputBox();
             return;
 
          case 'help':
             menu.helpButton.press();
+            focuser.focusInputBox();
             return;
 
          case 'search':
             if (!args[1]) {
                messenger.noTipSpecified('search for');
+               focuser.focusInputBox();
             } else {
                const matchingTips = searcher.search(args[1], jar.tipsArray);
                switcher.switchToLogBox();
@@ -213,10 +225,12 @@ function initInputter() {
 
          case 'random':
             menu.randomButton.press();
+            focuser.focusInputBox();
             return;
 
          case 'tags':
             logger.logTags();
+            focuser.focusInputBox();
             return;
 
          case 'edit':
@@ -245,12 +259,12 @@ function initInputter() {
                return;
             }
 
-
          case 'delete':
             let tipToDelete;
 
             if (!args[1]) {
                messenger.noTipSpecified('delete');
+               focuser.focusInputBox();
                return;
             } else if (isNaN(args[1])) {
                tipToDelete = jar.tipsArray.find(tip => tip.name.toLowerCase() === args[1].toLowerCase());
@@ -265,10 +279,9 @@ function initInputter() {
                jar.deleteTip(tipToDelete);
                messenger.tipDelted(tipToDelete.name);
                switcher.switchToHome();
+               focuser.focusDefault();
                return;
             }
-
-
 
          default:
             if (!args[0]) {
@@ -276,14 +289,15 @@ function initInputter() {
                return;
             } else {
                messenger.invalidCommand();
+               focuser.focusInputBox();
+               screen.render();
                return;
             }
-
       }
    }
 
    return {
-      clear,
+      reset,
       handleCommand,
    }
 }
@@ -335,16 +349,8 @@ function initTipMaker() {
       onNewTipScreen = false;
       fromEdit = false;
 
-      //this is literally the switcher.switchToHome() function but with append and detach the input box
-      //this fixes the letter doubling issue but im not sure why
-      currBox.detach();
-      currBox = homeBox;
-      screen.append(homeBox);
-      inputBox.detach();
-      screen.append(inputBox);
+      switcher.switchToHome();
       focuser.focusDefault();
-      homeBox.setContent(`{center}${figlet.textSync('home', {})}{/center}`);
-      screen.render();
    }
 
    function saveTip() {
@@ -624,11 +630,19 @@ function setNavListeners() {
                focuser.focusMenuBox();
                return;
 
-            case 'up':
-            case 'down':
-               focuser.focusInputBox();
-               return;
+            //TODO: up or down causes weird behavior while logging
+            // also weird behavcior when the log is longer than the box
+            // basically it keeps logging but wont render it until another keypress is registered
+            // 
+            // up and down should only go to the logbox if the log is longer than the box
+            // will use if(isLogging)
+            // adding that condition now will stop the screen from rendering the log
+            // until another keypress is registered
 
+            // case 'up':
+            // case 'down':
+            //    focuser.focusInputBox();
+            //    return;
             default:
                return;
          }
@@ -643,8 +657,8 @@ function setNavListeners() {
                return;
 
             case 'down':
-               if (screen.focused === newTipFields.saveButton) { newTipFields.nameBox.focus(); }
-               else { screen.focusNext(); }
+               if (screen.focused === newTipFields.saveButton) { focuser.focusNameBox(); }
+               else {screen.focusNext();}
                return;
 
             case 'left':
@@ -663,7 +677,6 @@ function setNavListeners() {
          switch (key.name) {
             case 'enter':
                input.handleCommand(inputBox.getValue());
-               input.clear();
                screen.render();
                return;
 
@@ -726,7 +739,6 @@ function setButtons() {
 
    menu.randomButton.on('press', () => {
       switcher.switchToLogBox();
-      menu.randomButton.focus();
       logger.figLog(logBox, 'random tip')
       const randomTip = searcher.random(jar.tipsArray);
       randomTip.index = 0;
@@ -735,15 +747,12 @@ function setButtons() {
 
    menu.searchButton.on('press', () => {
       switcher.switchToLogBox();
-      focuser.focusDefault();
       logger.figLog(logBox, `search :\n${inputBox.getValue()}`);
       logger.logTipArray(searcher.search(inputBox.getValue(), jar.tipsArray));
-      input.clear();
    });
 
    menu.helpButton.on('press', () => {
       switcher.switchToHelp();
-      focuser.focusDefault();
    });
 
    newTipFields.saveButton.on('press', () => {
