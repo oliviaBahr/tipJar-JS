@@ -91,7 +91,6 @@ function initSwitcher() {
       currBox.detach();
       currBox = logBox;
       screen.append(logBox);
-      logMod.mainBox.focus();
       logBox.setContent('');
       input.reset();
       screen.render();
@@ -159,12 +158,17 @@ function initFocuser() {
       }
    }
 
+   function focusLogBox(){
+      logBox.focus();
+   }
+
    return {
       focusMenuBox,
       focusInputBox,
       focusDefault,
       focusCurrBox,
-      focusNameBox
+      focusNameBox,
+      focusLogBox
    }
 }
 
@@ -446,21 +450,23 @@ function initLogger() {
    }
 
    async function logTipArray(tipArray) {
-      isLogging = true;
-      keepLogging = true;
       searcher.sortAlpha(tipArray);
 
-      for (let i = 0; i < tipArray.length; i++) {
-         if (!keepLogging) { break; }
-         const tip = tipArray[i];
-         tip.index = i + 1;
-
-         //artificial delay
+      if(isLogging){
+         keepLogging = false;
          await new Promise((resolve) => setTimeout(resolve, logDelay));
+      }
+      
+      keepLogging = true;
+      isLogging = true;
+      for (let i = 0; i < tipArray.length && keepLogging; i++) {
+         const tip = tipArray[i];
+         tip.index = i + 1; //set tip index property so it can be referenced with commands
+
          logBox.log(`${i + 1}.`)
          logTip(tip);
+         await new Promise((resolve) => setTimeout(resolve, logDelay)); //artificial delay
       }
-
       isLogging = false;
       keepLogging = true;
    }
@@ -577,7 +583,6 @@ function setNavListeners() {
          switch (key.name) {
             case 'escape':
                if (onNewTipScreen) { tipMaker.end(); return; }
-               else if (screen.focused === logBox) { focuser.focusDefault(); return; }
                else if (screen.focused === inputBox) { focuser.focusMenuBox(); return; }
                else { screen.destroy(); return process.exit(0); }
 
@@ -591,7 +596,7 @@ function setNavListeners() {
          }
       });
    }
-   function setInputOnFocus() {
+   function setInputOnFocus() { 
       inputBox.on('focus', () => {
          inputBox.readInput();
       });
@@ -708,7 +713,6 @@ function setNavListeners() {
          }
       });
    }
-
    function setListeners() {
       setInputOnFocus();
       setQuitListener();
@@ -731,6 +735,7 @@ function setButtons() {
    menu.logAllTipsButton.on('press', () => {
       switcher.switchToLogBox();
       logger.logTipArray(jar.tipsArray);
+      focuser.focusLogBox();
    });
 
    menu.homeButton.on('press', () => {
@@ -743,12 +748,14 @@ function setButtons() {
       const randomTip = searcher.random(jar.tipsArray);
       randomTip.index = 0;
       logger.logTip(randomTip);
+      screen.render();
    });
 
    menu.searchButton.on('press', () => {
       switcher.switchToLogBox();
       logger.figLog(logBox, `search :\n${inputBox.getValue()}`);
       logger.logTipArray(searcher.search(inputBox.getValue(), jar.tipsArray));
+      screen.render();
    });
 
    menu.helpButton.on('press', () => {
