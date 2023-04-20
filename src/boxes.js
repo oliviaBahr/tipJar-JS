@@ -1,6 +1,5 @@
 
 const blessed = require('blessed');
-const colors = require('colors');
 
 class MenuMod {
    constructor() {
