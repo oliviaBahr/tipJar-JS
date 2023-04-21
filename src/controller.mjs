@@ -638,8 +638,8 @@ function setNavListeners() {
                return;
 
             case 'enter':
-               if (screen.focused !== newTipFields.saveButton) { screen.focusNext(); }
-               return;
+               if (screen.focused === newTipFields.saveButton) { return; }
+               else { screen.focusNext(); return; }
          }
       });
    }
