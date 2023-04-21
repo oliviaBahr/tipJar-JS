@@ -379,6 +379,14 @@ function initSearcher() {
 
 function initLogger() {
 
+   function logWelcome() {
+      const welcomeTo = figlet.textSync('welcome to', {});
+      const tipJar = figlet.textSync('t i p J a r !', {});
+
+      homeBox.log(`{center}${welcomeTo}{/center}`);
+      homeBox.log(`{center}${tipJar}{/center}`);
+   }
+
    function logHelp(box) {
       box.log();
       box.log('when you print tips, it will show the tip contents and an index.')
@@ -394,10 +402,6 @@ function initLogger() {
       box.log('help - show this help message');
    }
 
-   function clear() {
-      logBox.setContent('');
-   }
-
    function figCenter(box, string) {
       box.setContent('');
       box.log(`{center}${figlet.textSync(string, {})}{/center}`);
@@ -407,14 +411,6 @@ function initLogger() {
       keepLogging = false;
       await new Promise((resolve) => setTimeout(resolve, logDelay));
       isLogging = false;
-   }
-
-   function logWelcome() {
-      const welcomeTo = figlet.textSync('welcome to', {});
-      const tipJar = figlet.textSync('t i p J a r !', {});
-
-      homeBox.log(`{center}${welcomeTo}{/center}`);
-      homeBox.log(`{center}${tipJar}{/center}`);
    }
 
    function logTip(tip) {
@@ -445,7 +441,7 @@ function initLogger() {
 
    function logTags() {
       var tags = Array.from(jar.jarTags);
-      searcher.sortAlpha(tags);
+      //searcher.sortAlpha(tags);
       for (const tag of tags) {
          logBox.log(`Tag: ${tag}`);
       }
@@ -457,7 +453,6 @@ function initLogger() {
       logWelcome,
       logTip,
       logTipArray,
-      clear,
       logTags,
       logHelp
    }
