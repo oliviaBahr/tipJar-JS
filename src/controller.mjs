@@ -568,7 +568,7 @@ function setNavListeners() {
       });
 
       newTipBox.on('element focus', (el) => {
-         if (onNewTipScreen && el !== newTipFields.saveButton) {
+         if (el !== newTipFields.saveButton) {
             el.readInput();
          }
       });
