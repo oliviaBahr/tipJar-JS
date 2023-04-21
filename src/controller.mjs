@@ -6,6 +6,7 @@ const figlet = pkg;
 
 import { MenuMod, NewTipMod, LogMod, InputBox, HomeMod, MessageMod, HelpMod } from './boxes.js';
 import { Tip, Jar } from './jarData-interface.js';
+const jar = new Jar();
 
 const screen = blessed.screen({
    title: 'bless',
@@ -13,9 +14,6 @@ const screen = blessed.screen({
    keys: true,
    mouse: true,
 });
-
-
-const jar = new Jar();
 
 const menu = new MenuMod();
 const menuBox = menu.mainBox;
@@ -53,7 +51,6 @@ var origName;
 
 const logger = initLogger();
 const searcher = initSearcher();
-const terminal = initTerminalUtils();
 const switcher = initSwitcher();
 const focuser = initFocuser();
 const tipMaker = initTipMaker();
@@ -116,21 +113,8 @@ function initSwitcher() {
 
 function initFocuser() {
 
-   function focusMenuBox(button) {
-      if (button === 'bottom') { menu.bottom.focus(); }
-      else { menu.top.focus(); }
-   }
-
-   function focusInputBox() {
-      inputBox.focus();
-   }
-
    function focusDefault() {
       defaultFocusBox.focus();
-   }
-
-   function focusNameBox() {
-      newTipFields.nameBox.focus();
    }
 
    function focusCurrBox() {
@@ -149,6 +133,19 @@ function initFocuser() {
       }
    }
 
+   function focusMenuBox(button) {
+      if (button === 'bottom') { menu.bottom.focus(); }
+      else { menu.top.focus(); }
+   }
+
+   function focusInputBox() {
+      inputBox.focus();
+   }
+
+   function focusNameBox() {
+      newTipFields.nameBox.focus();
+   }
+
    function focusLogBox() {
       logBox.focus();
    }
@@ -163,21 +160,6 @@ function initFocuser() {
    }
 }
 
-//TODO: implement to resize boxes based on terminal size
-function initTerminalUtils() {
-
-   function getColumns() {
-      return process.stdout.columns;
-   }
-   function getRows() {
-      return process.stdout.rows;
-   }
-
-   return {
-      getColumns,
-      getRows
-   }
-}
 
 function initInputter() {
 
@@ -298,43 +280,6 @@ function initInputter() {
    }
 }
 
-function initSearcher() {
-
-   function search(query, tipArray) {
-      query = query.toLowerCase();
-      let matchingTips = [];
-      let push = false;
-
-      for (let tip of tipArray) {
-         if (tip.name.toLowerCase().includes(query)) { push = true; }
-         else if (tip.description.toLowerCase().includes(query)) { push = true; }
-         else if (tip.tags.has(query)) { push = true; }
-         else if (tip.links.has(query)) { push = true; }
-
-         if (push) { matchingTips.push(tip); }
-         push = false;
-      }
-      return matchingTips;
-   }
-
-   function random(tipArray) {
-      const randomIndex = Math.floor(Math.random() * tipArray.length);
-      return tipArray[randomIndex];
-   }
-
-   function sortAlpha(tipArray) {
-      tipArray.sort((a, b) => {
-         return a.name.localeCompare(b.name);
-      });
-   }
-
-   return {
-      search,
-      random,
-      sortAlpha
-   }
-}
-
 function initTipMaker() {
 
    function end() {
@@ -391,6 +336,44 @@ function initTipMaker() {
    return {
       end,
       saveTip,
+   }
+}
+
+
+function initSearcher() {
+
+   function search(query, tipArray) {
+      query = query.toLowerCase();
+      let matchingTips = [];
+      let push = false;
+
+      for (let tip of tipArray) {
+         if (tip.name.toLowerCase().includes(query)) { push = true; }
+         else if (tip.description.toLowerCase().includes(query)) { push = true; }
+         else if (tip.tags.has(query)) { push = true; }
+         else if (tip.links.has(query)) { push = true; }
+
+         if (push) { matchingTips.push(tip); }
+         push = false;
+      }
+      return matchingTips;
+   }
+
+   function random(tipArray) {
+      const randomIndex = Math.floor(Math.random() * tipArray.length);
+      return tipArray[randomIndex];
+   }
+
+   function sortAlpha(tipArray) {
+      tipArray.sort((a, b) => {
+         return a.name.localeCompare(b.name);
+      });
+   }
+
+   return {
+      search,
+      random,
+      sortAlpha
    }
 }
 
@@ -562,7 +545,6 @@ function initMessenger() {
       tipAdded
    }
 }
-
 
 
 function setNavListeners() {
