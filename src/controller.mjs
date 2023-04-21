@@ -13,6 +13,11 @@ const screen = blessed.screen({
    smartCSR: true,
    keys: true,
    mouse: true,
+   cursor: {
+      artificial: true,
+      shape: 'line',
+      color: 'magenta'
+   }
 });
 
 const menu = new MenuMod();
