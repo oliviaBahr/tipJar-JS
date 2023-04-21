@@ -124,7 +124,7 @@ function initFocuser() {
             break;
 
          case newTipBox:
-            focuser.focusNewTip();
+            focuser.focusNameBox();
             break;
 
          case homeBox:
