@@ -65,29 +65,18 @@ const messenger = initMessenger();
 
 function initSwitcher() {
 
-   function switchToHome() {
-      if (isLogging) {
-         logger.stopLogging();
-         setTimeout(() => {
-            currBox.detach();
-            currBox = homeBox;
-            screen.append(homeBox);
-            input.reset();
-            homeBox.setContent(`{center}${figlet.textSync('home', {})}{/center}`);
-            screen.render();
-         }, logDelay);
-      } else {
-         currBox.detach();
-         currBox = homeBox;
-         screen.append(homeBox);
-         input.reset();
-         homeBox.setContent(`{center}${figlet.textSync('home', {})}{/center}`);
-         screen.render();
-      }
-
+   async function switchToHome() {
+      if (isLogging) { await logger.stopLogging(); }
+      currBox.detach();
+      currBox = homeBox;
+      screen.append(homeBox);
+      input.reset();
+      homeBox.setContent(`{center}${figlet.textSync('home', {})}{/center}`);
+      screen.render();
    }
 
-   function switchToLogBox() {
+   async function switchToLogBox() {
+      if (isLogging) { await logger.stopLogging(); }
       currBox.detach();
       currBox = logBox;
       screen.append(logBox);
@@ -96,7 +85,8 @@ function initSwitcher() {
       screen.render();
    }
 
-   function switchToNewTip() {
+   async function switchToNewTip() {
+      if (isLogging) { await logger.stopLogging(); }
       currBox.detach();
       onNewTipScreen = true;
       currBox = newTipBox;
@@ -105,11 +95,12 @@ function initSwitcher() {
       screen.render();
    }
 
-   function switchToHelp() {
+   async function switchToHelp() {
+      if (isLogging) { await logger.stopLogging(); }
       currBox.detach();
       currBox = helpBox;
       screen.append(helpBox);
-      logger.figLog(helpBox, 'help');
+      logger.figCenter(helpBox, 'help');
       logger.logHelp(helpBox);
       input.reset();
       screen.render();
@@ -119,7 +110,7 @@ function initSwitcher() {
       switchToHome,
       switchToLogBox,
       switchToNewTip,
-      switchToHelp
+      switchToHelp,
    }
 }
 
@@ -138,7 +129,7 @@ function initFocuser() {
       defaultFocusBox.focus();
    }
 
-   function focusNameBox(){
+   function focusNameBox() {
       newTipFields.nameBox.focus();
    }
 
@@ -158,7 +149,7 @@ function initFocuser() {
       }
    }
 
-   function focusLogBox(){
+   function focusLogBox() {
       logBox.focus();
    }
 
@@ -223,6 +214,7 @@ function initInputter() {
             } else {
                const matchingTips = searcher.search(args[1], jar.tipsArray);
                switcher.switchToLogBox();
+               logger.figCenter(logBox, `search :\n${args[1]}`);
                logger.logTipArray(matchingTips);
             }
             return;
@@ -423,13 +415,14 @@ function initLogger() {
       logBox.setContent('');
    }
 
-   function figLog(box, string) {
+   function figCenter(box, string) {
       box.setContent('');
       box.log(`{center}${figlet.textSync(string, {})}{/center}`);
    }
 
-   function stopLogging() {
+   async function stopLogging() {
       keepLogging = false;
+      await new Promise((resolve) => setTimeout(resolve, logDelay));
       isLogging = false;
    }
 
@@ -452,13 +445,9 @@ function initLogger() {
    async function logTipArray(tipArray) {
       searcher.sortAlpha(tipArray);
 
-      if(isLogging){
-         keepLogging = false;
-         await new Promise((resolve) => setTimeout(resolve, logDelay));
-      }
-      
       keepLogging = true;
       isLogging = true;
+
       for (let i = 0; i < tipArray.length && keepLogging; i++) {
          const tip = tipArray[i];
          tip.index = i + 1; //set tip index property so it can be referenced with commands
@@ -468,7 +457,7 @@ function initLogger() {
          await new Promise((resolve) => setTimeout(resolve, logDelay)); //artificial delay
       }
       isLogging = false;
-      keepLogging = true;
+      keepLogging = false;
    }
 
    function logTags() {
@@ -480,7 +469,7 @@ function initLogger() {
    }
 
    return {
-      figLog,
+      figCenter,
       stopLogging,
       logWelcome,
       logTip,
@@ -596,7 +585,7 @@ function setNavListeners() {
          }
       });
    }
-   function setInputOnFocus() { 
+   function setInputOnFocus() {
       inputBox.on('focus', () => {
          inputBox.readInput();
       });
@@ -663,7 +652,7 @@ function setNavListeners() {
 
             case 'down':
                if (screen.focused === newTipFields.saveButton) { focuser.focusNameBox(); }
-               else {screen.focusNext();}
+               else { screen.focusNext(); }
                return;
 
             case 'left':
@@ -728,37 +717,46 @@ function setNavListeners() {
 
 function setButtons() {
 
-   menu.createButton.on('press', () => {
+   menu.createButton.on('press', async () => {
       switcher.switchToNewTip();
    });
 
-   menu.logAllTipsButton.on('press', () => {
-      switcher.switchToLogBox();
+   menu.logAllTipsButton.on('press', async () => {
+      await switcher.switchToLogBox()
+
+      logger.figCenter(logBox, 'all tips');
       logger.logTipArray(jar.tipsArray);
-      focuser.focusLogBox();
+      //focuser.focusLogBox(); //annoying for testing good for prod
    });
 
-   menu.homeButton.on('press', () => {
+   menu.homeButton.on('press', async () => {
       switcher.switchToHome();
    });
 
-   menu.randomButton.on('press', () => {
-      switcher.switchToLogBox();
-      logger.figLog(logBox, 'random tip')
+   menu.randomButton.on('press', async () => {
+      await switcher.switchToLogBox();
       const randomTip = searcher.random(jar.tipsArray);
       randomTip.index = 0;
+
+      logger.figCenter(logBox, 'random tip')
       logger.logTip(randomTip);
       screen.render();
    });
 
-   menu.searchButton.on('press', () => {
-      switcher.switchToLogBox();
-      logger.figLog(logBox, `search :\n${inputBox.getValue()}`);
-      logger.logTipArray(searcher.search(inputBox.getValue(), jar.tipsArray));
+   menu.searchButton.on('press', async () => {
+      const query = inputBox.getValue();
+
+      if (query === '') {
+         messenger.noTipSpecified('search for');
+         return;
+      }
+      await switcher.switchToLogBox();
+      logger.figCenter(logBox, `search :\n${query}`);
+      logger.logTipArray(searcher.search(query, jar.tipsArray));
       screen.render();
    });
 
-   menu.helpButton.on('press', () => {
+   menu.helpButton.on('press', async () => {
       switcher.switchToHelp();
    });
 
