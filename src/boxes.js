@@ -251,10 +251,10 @@ class NewTipMod {
          left: 'center',
 
          width: '80%',
-         height: 3,
+         height: 5,
 
-         keys: true,
-         mouse: true,
+         keys: false,
+         mouse: false,
 
          border: { type: 'line' },
 
@@ -265,11 +265,11 @@ class NewTipMod {
          }
       });
 
-      this.tagsBox = blessed.textarea({
+      this.tagsBox = blessed.textbox({
          label: 'Tags',
          name: 'tagsBox',
 
-         top: 11,
+         top: 13,
          left: 'center',
 
          width: '80%',
@@ -286,11 +286,11 @@ class NewTipMod {
          label: 'Links',
          name: 'linksBox',
 
-         top: 14,
+         top: 16,
          left: 'center',
 
          width: '80%',
-         height: 3,
+         height: 5,
 
          keys: true,
          mouse: true,
@@ -304,7 +304,7 @@ class NewTipMod {
          tags: true,
          content: '{center}save tip{/center}',
 
-         top: 17,
+         top: 23,
          left: 'center',
 
          width: '40%',
