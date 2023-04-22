@@ -55,6 +55,7 @@ var origName;
 
 
 const logger = initLogger();
+const fig = initFig();
 const searcher = initSearcher();
 const switcher = initSwitcher();
 const focuser = initFocuser();
@@ -102,8 +103,8 @@ function initSwitcher() {
       currBox.detach();
       currBox = helpBox;
       screen.append(helpBox);
-      logger.figCenter(helpBox, 'help');
-      logger.logHelp(helpBox);
+      fig.center(helpBox, 'help');
+      fig.help(helpBox);
       input.reset();
       screen.render();
    }
@@ -206,7 +207,7 @@ function initInputter() {
             } else {
                const matchingTips = searcher.search(args[1], jar.tipsArray);
                switcher.switchToLogBox();
-               logger.figCenter(logBox, `search :\n${args[1]}`);
+               fig.center(logBox, `search :\n${args[1]}`);
                logger.logTipArray(matchingTips);
             }
             return;
@@ -389,47 +390,10 @@ function initSearcher() {
 
 function initLogger() {
 
-   function logWelcome() {
-      const welcomeTo = figlet.textSync('welcome to', {});
-      const tipJar = figlet.textSync('t i p J a r !', {});
-
-      homeBox.log(`{center}${welcomeTo}{/center}`);
-      homeBox.log(`{center}${tipJar}{/center}`);
-   }
-
-   function logHelp(box) {
-      box.log();
-      box.log('when you print tips, it will show the tip contents and an index.')
-      box.log('you can reference a tip using its name or its index in the list')
-      box.log();
-      box.log('here are some basic commands:');
-      box.log('create - create a new tip');
-      box.log('all - show all tips');
-      box.log('edit [name or index] - edit a tip');
-      box.log('delete [name or index] - delete a tip');
-      box.log('search [query] - search for a tip');
-      box.log('random - get a random tip');
-      box.log('home - go to the home screen');
-      box.log('help - show this help message');
-   }
-
-   function figCenter(box, string) {
-      box.setContent('');
-      box.log(`{center}${figlet.textSync(string, {})}{/center}`);
-   }
-
    async function stopLogging() {
       keepLogging = false;
       await new Promise((resolve) => setTimeout(resolve, logDelay));
       isLogging = false;
-   }
-
-   function logTip(tip) {
-      logBox.log(`Name: ${tip.name}`);
-      if (tip.description.length > 0) { logBox.log(`Description: ${tip.description}`); }
-      if (![...tip.tags].includes('')) { logBox.log(`Tags: ${[...tip.tags]}`); }
-      if (![...tip.links].includes('')) { logBox.log(`links: ${[...tip.links]}`); }
-      logBox.log();
    }
 
    async function logTipArray(tipArray) {
@@ -450,6 +414,14 @@ function initLogger() {
       keepLogging = false;
    }
 
+   function logTip(tip) {
+      logBox.log(`Name: ${tip.name}`);
+      if (tip.description.length > 0) { logBox.log(`Description: ${tip.description}`); }
+      if (![...tip.tags].includes('')) { logBox.log(`Tags: ${[...tip.tags]}`); }
+      if (![...tip.links].includes('')) { logBox.log(`links: ${[...tip.links]}`); }
+      logBox.log();
+   }
+
    function logTags() {
       var tags = Array.from(jar.jarTags);
       //searcher.sortAlpha(tags);
@@ -459,13 +431,48 @@ function initLogger() {
    }
 
    return {
-      figCenter,
       stopLogging,
-      logWelcome,
-      logTip,
       logTipArray,
+      logTip,
       logTags,
-      logHelp
+   }
+}
+
+function initFig(){
+
+   function welcome(){
+      const welcomeTo = figlet.textSync('welcome to', {});
+      const tipJar = figlet.textSync('t i p J a r !', {});
+
+      homeBox.log(`{center}${welcomeTo}{/center}`);
+      homeBox.log(`{center}${tipJar}{/center}`);
+   }
+
+   function center(box, string) {
+      box.setContent('');
+      box.log(`{center}${figlet.textSync(string, {})}{/center}`);
+   }
+
+   function help(box) {
+      box.log();
+      box.log('when you print tips, it will show the tip contents and an index.')
+      box.log('you can reference a tip using its name or its index in the list')
+      box.log();
+      box.log('here are some basic commands:');
+      box.log('create - create a new tip');
+      box.log('all - show all tips');
+      box.log('edit [name or index] - edit a tip');
+      box.log('delete [name or index] - delete a tip');
+      box.log('search [query] - search for a tip');
+      box.log('random - get a random tip');
+      box.log('home - go to the home screen');
+      box.log('help - show this help message');
+   }
+
+   return {
+      welcome,
+      center,
+      help
    }
 }
 
@@ -721,7 +728,7 @@ function setButtons() {
    menu.logAllTipsButton.on('press', async () => {
       await switcher.switchToLogBox()
 
-      logger.figCenter(logBox, 'all tips');
+      fig.center(logBox, 'all tips');
       logger.logTipArray(jar.tipsArray);
       //focuser.focusLogBox(); //annoying for testing good for prod
    });
@@ -735,7 +742,7 @@ function setButtons() {
       const randomTip = searcher.random(jar.tipsArray);
       randomTip.index = 0;
 
-      logger.figCenter(logBox, 'random tip')
+      fig.center(logBox, 'random tip')
       logger.logTip(randomTip);
       screen.render();
    });
@@ -748,7 +755,7 @@ function setButtons() {
          return;
       }
       await switcher.switchToLogBox();
-      logger.figCenter(logBox, `search :\n${query}`);
+      fig.center(logBox, `search :\n${query}`);
       logger.logTipArray(searcher.search(query, jar.tipsArray));
       screen.render();
    });
@@ -773,7 +780,7 @@ function run() {
    screen.append(menuBox);
    screen.append(homeBox);
    screen.append(inputBox);
-   logger.logWelcome();
+   fig.welcome();
 
    focuser.focusDefault();
    screen.render();
