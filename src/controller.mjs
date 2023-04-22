@@ -189,6 +189,11 @@ function initInputter() {
             focuser.focusInputBox();
             return;
 
+         case 'all':
+            menu.logAllTipsButton.press();
+            focuser.focusInputBox();
+            return;
+   
          case 'help':
             menu.helpButton.press();
             focuser.focusInputBox();
@@ -399,6 +404,7 @@ function initLogger() {
       box.log();
       box.log('here are some basic commands:');
       box.log('create - create a new tip');
+      box.log('all - show all tips');
       box.log('edit [name or index] - edit a tip');
       box.log('delete [name or index] - delete a tip');
       box.log('search [query] - search for a tip');
@@ -651,7 +657,7 @@ function setNavListeners() {
                if (screen.focused === newTipFields.linksBox) {
                   newTipFields.linksBox.setValue(newTipFields.linksBox.getValue().slice(0, -1));
                }
-               
+
                screen.focusNext();
                return;
          }
