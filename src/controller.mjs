@@ -644,7 +644,16 @@ function setNavListeners() {
 
             case 'enter':
                if (screen.focused === newTipFields.saveButton) { return; }
-               else { screen.focusNext(); return; }
+
+               if (screen.focused === newTipFields.descriptionBox) {
+                  newTipFields.descriptionBox.setValue(newTipFields.descriptionBox.getValue().slice(0, -1));
+               } 
+               if (screen.focused === newTipFields.linksBox) {
+                  newTipFields.linksBox.setValue(newTipFields.linksBox.getValue().slice(0, -1));
+               }
+               
+               screen.focusNext();
+               return;
          }
       });
    }
