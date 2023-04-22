@@ -42,7 +42,6 @@ class Jar {
 			jarTags: [...this.jarTags],
 		});
 		fs.writeFileSync(dataFile, jString, { flag: "w" });
-		//this.load();
 	}
 
 	tipToJSON(tip) {
@@ -77,40 +76,6 @@ class Jar {
 		tip.setTags(tags);
 		tip.setLinks(links);
 		this.save();
-	}
-
-	getTipsBySearch(query) {
-		const matchingTips = [];
-		let tipsToSearch = this.tipsArray;
-		query = query.toLowerCase();
-
-		for (const tip of tipsToSearch) {
-			if ((tip.name.toLowerCase().includes(query))
-				|| (tip.description.toLowerCase().includes(query))
-				|| (tip.tags.has(query))
-				|| (typeof tip.links === 'string' && tip.links.toLowerCase().includes(query))) {
-				matchingTips.push(tip);
-			}
-		}
-		return matchingTips;
-	}
-
-	getTipsByTags(tags) {
-		const matchingTips = [];
-
-		for (const tip of this.tipsArray) {
-			for (const tag of tags) {
-				if (tip.tags.has(tag)) {
-					matchingTips.push(tip);
-				}
-			}
-		}
-		return matchingTips;
-	}
-
-	getRandomTip() {
-		const randomIndex = Math.floor(Math.random() * this.tipsArray.length);
-		return this.tipsArray[randomIndex];
 	}
 
 }//class Jar
