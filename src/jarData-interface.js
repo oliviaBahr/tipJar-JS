@@ -58,7 +58,7 @@ class Jar {
 		this.tipsArray.push(newTip);
 
 		newTip.tags.forEach(tag => {
-			if (!this.jarTags.has(tag)) {
+			if (!this.jarTags.has(tag) && tag.replace(/\s/g, '') !== '') {
 				this.jarTags.add(tag);
 			}
 		});
