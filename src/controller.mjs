@@ -251,6 +251,7 @@ function initInputter() {
          case 'delete':
             let tipToDelete;
 
+            // identify tip to delete
             if (!args[1]) {
                messenger.noTipSpecified('delete');
                focuser.focusInputBox();
@@ -261,14 +262,15 @@ function initInputter() {
                tipToDelete = jar.tipsArray.find(tip => tip.index === parseInt(args[1]));
             }
 
+            //handle
             if (!tipToDelete) {
                messenger.tipNotFound();
                return;
             } else {
                jar.deleteTip(tipToDelete);
+               input.reset();
+               focuser.focusInputBox();
                messenger.tipDelted(tipToDelete.name);
-               switcher.switchToHome();
-               focuser.focusDefault();
                return;
             }
 
@@ -423,9 +425,9 @@ function initLogger() {
    }
 
    function logTags() {
-      var tags = Array.from(jar.jarTags);
+      // var tags = Array.from(jar.jarTags);
       //searcher.sortAlpha(tags);
-      for (const tag of tags) {
+      for (const tag of jar.jarTags) {
          logBox.log(`Tag: ${tag}`);
       }
    }
@@ -487,8 +489,8 @@ function initMessenger() {
    }
 
    function tipDelted(name) {
-      messageBox.height = 3;
-      messageBox.top = '16%'
+      messageBox.height = 5;
+      messageBox.top = '60%'
       messageBox.left = '25%'
       screen.append(messageBox);
       messageBox.log(`{center}deleted: ${name}{/center}`, 2);
