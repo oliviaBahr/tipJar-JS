@@ -310,8 +310,8 @@ function initTipMaker() {
    function saveTip() {
       const tipName = newTipFields.nameBox.getValue().trim();
       const description = newTipFields.descriptionBox.getValue().trim();
-      const tags = newTipFields.tagsBox.getValue().split(',').map(tag => tag.trim());
-      const links = newTipFields.linksBox.getValue().split(',').map(link => link.trim());
+      const tags = newTipFields.tagsBox.getValue().split(',').map(tag => tag.trim()).filter(tag => tag !== '');
+      const links = newTipFields.linksBox.getValue().split(',').map(link => link.trim()).filter(link => link !== '');      
 
       if (tipName === '') {
          messenger.noTipName();
