@@ -241,8 +241,8 @@ function initInputter() {
                switcher.switchToNewTip();
                newTipFields.nameBox.setValue(tipToEdit.name);
                newTipFields.descriptionBox.setValue(tipToEdit.description);
-               newTipFields.tagsBox.setValue([...tipToEdit.tags].join(', '));
-               newTipFields.linksBox.setValue([...tipToEdit.links].join(', '));
+               newTipFields.tagsBox.setValue(tipToEdit.tags.join(', '));
+               newTipFields.linksBox.setValue(tipToEdit.links.join(', '));
                fromEdit = true;
                origName = tipToEdit.name;
                return;
@@ -363,8 +363,8 @@ function initSearcher() {
       for (let tip of tipArray) {
          if (tip.name.toLowerCase().includes(query)) { push = true; }
          else if (tip.description.toLowerCase().includes(query)) { push = true; }
-         else if (tip.tags.has(query)) { push = true; }
-         else if (tip.links.has(query)) { push = true; }
+         else if (tip.tags.includes(query)) { push = true; }
+         else if (tip.links.includes(query)) { push = true; }
 
          if (push) { matchingTips.push(tip); }
          push = false;
@@ -419,8 +419,8 @@ function initLogger() {
    function logTip(tip) {
       logBox.log(`Name: ${tip.name}`);
       if (tip.description.length > 0) { logBox.log(`Description: ${tip.description}`); }
-      if (![...tip.tags].includes('')) { logBox.log(`Tags: ${[...tip.tags]}`); }
-      if (![...tip.links].includes('')) { logBox.log(`links: ${[...tip.links]}`); }
+      if (!tip.tags.includes('')) { logBox.log(`Tags: ${tip.tags}`); }
+      if (!tip.links.includes('')) { logBox.log(`links: ${tip.links}`); }
       logBox.log();
    }
 

@@ -6,7 +6,7 @@ const dataFile = 'src/jarData.json';
 class Jar {
 	constructor() {
 		this.tipsArray = [];
-		this.jarTags = new Set();
+		this.jarTags = [];
 		this.printedIndex;
 		this.load();
 	}
@@ -25,7 +25,7 @@ class Jar {
 
 			if (jarData.jarTags && jarData.jarTags.length > 0) {
 				jarData.jarTags.forEach(tag => {
-					this.jarTags.add(tag);
+					this.jarTags.push(tag);
 				});
 			}
 		} catch (err) {
@@ -39,7 +39,7 @@ class Jar {
 	save() {
 		const jString = JSON.stringify({
 			tipsArray: this.tipsArray.map(tip => this.tipToJSON(tip)),
-			jarTags: [...this.jarTags],
+			jarTags: this.jarTags,
 		});
 		fs.writeFileSync(dataFile, jString, { flag: "w" });
 	}
@@ -48,8 +48,8 @@ class Jar {
 		return {
 			name: tip.name,
 			description: tip.description,
-			tags: [...tip.tags],
-			links: [...tip.links],
+			tags: tip.tags,
+			links: tip.links,
 		};
 	}
 
@@ -57,15 +57,14 @@ class Jar {
 		this.tipsArray.push(newTip);
 
 		newTip.tags.forEach(tag => {
-			if (!this.jarTags.has(tag) && tag.replace(/\s/g, '') !== '') {
-				this.jarTags.add(tag);
+			if (!this.jarTags.includes(tag)) {
+				this.jarTags.push(tag);
 			}
 		});
 		this.save();
 	}
 
 	deleteTip(tipToDelete) {
-		// const tipToDelete = this.tipsArray.find(tip => (tip.index === printedIndex))
 		const indexToDelete = this.tipsArray.indexOf(tipToDelete);
 		this.tipsArray.splice(indexToDelete, 1);
 	}
@@ -86,8 +85,8 @@ class Tip {
 	constructor(name, description = '', tags = [], links = []) {
 		this.name = name;
 		this.description = description;
-		this.tags = new Set(tags);
-		this.links = new Set(links);
+		this.tags = tags;
+		this.links = links;
 	}
 
 	setName(newName) {
@@ -100,21 +99,21 @@ class Tip {
 
 	setLinks(newLinks) {
 		newLinks.forEach(link => {
-			if (!this.links.has(link)) {
-				this.links.add(link);
+			if (!this.links.includes(link)) {
+				this.links.push(link);
 			}
 		});
 	}
 
 	setTags(newTags) {
 		newTags.forEach(tag => {
-			if (!this.tags.has(tag)) {
-				this.tags.add(tag);
+			if (!this.tags.includes(tag)) {
+				this.tags.push(tag);
 			}
 		});
 	}
+}
 
-}//class Tip
 
 
 module.exports = { Tip, Jar };
