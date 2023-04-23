@@ -16,6 +16,7 @@ class Jar {
 			const file = fs.readFileSync(dataFile);
 			const jarData = JSON.parse(file);
 
+			//load tips
 			if (jarData.tipsArray && jarData.tipsArray.length > 0) {
 				jarData.tipsArray.forEach(tip => {
 					const newTip = new Tip(tip.name, tip.description, tip.tags, tip.links);
@@ -23,16 +24,25 @@ class Jar {
 				});
 			}
 
+			//load jarTags
 			if (jarData.jarTags && jarData.jarTags.length > 0) {
 				jarData.jarTags.forEach(tag => {
 					this.jarTags.push(tag);
 				});
 			}
+			
 		} catch (err) {
-			if (fs.readFileSync(dataFile).length === 0) {
-			} else {
-				console.error(`Error loading jarData.json: ${err.message}`);
+			// if file doesn't exist, create it
+			if (err.code === 'ENOENT') {
+				fs.writeFileSync(dataFile, '');
+				return;
 			}
+			//ignore the error about unexpected end of JSON
+			if (fs.readFileSync(dataFile).length === 0) {
+				return;
+			}
+			//log error
+			console.error(`Error loading jarData.json: ${err.message}`);
 		}
 	}
 
@@ -41,6 +51,7 @@ class Jar {
 			tipsArray: this.tipsArray.map(tip => this.tipToJSON(tip)),
 			jarTags: this.jarTags,
 		});
+		//flag: "w" overwrites the file
 		fs.writeFileSync(dataFile, jString, { flag: "w" });
 	}
 
