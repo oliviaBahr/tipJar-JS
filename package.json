@@ -1,0 +1,46 @@
+{
+  "name": "tipjar",
+  "version": "1.0.0-dev",
+  "description": "a searchable jar of your helpful information. a place to put everything you don't have a place for. ",
+  "main": "./src/controller.mjs",
+  "scripts": {
+    "tips": "node src/controller.mjs",
+    "test": "node src/controller.mjs"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/oliviaBahr/tipJar.git"
+  },
+  "keywords": [
+    "notes",
+    "tui",
+    "searchable",
+    "tui"
+  ],
+  "author": "Olivia Bahr",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/oliviaBahr/tipJar/issues"
+  },
+  "homepage": "https://github.com/oliviaBahr/tipJar#readme",
+  "devDependencies": {
+    "husky": "^8.0.3",
+    "lint-staged": "^13.2.1",
+    "prettier": "^2.8.8"
+  },
+  "dependencies": {
+    "blessed": "^0.1.81",
+    "figlet": "^1.6.0"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.{js,mjs}": [
+      "prettier --write",
+      "git add"
+    ]
+  }
+}
