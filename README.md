@@ -10,13 +10,14 @@ it runs directly in a terminal window so you can feel like a hacker even though 
 <img src="assets/tipJarWelcomeScreen.png" width="512"/>
 <br>
 
-this is a solo indie project so contributions are welcome! please see issues if you're interested in helping my noble cause.\
-please use lower case only (because this is cool people repo).
+this was a project to 1. learn javascript and 2. build this tool. js was absolutely the wrong language for the job, i just forced it on this project as a way to learn the language.\
+it's still buggy and unpolished. hopefully one day i'll rewrite this in a language it makes more sense to build a TUI in.
 <br>
 <br>
 
 ### how to run it
-navigate to the folder then run ```node src/controller.mjs``` to start the program.\
+no way i'm publishing the javascript version of this so...\
+clone the repo and run ```node src/controller.mjs``` to start the program.\
 here are the dependencies you need
 - [node](https://nodejs.org/en/download)
 - [blessed](https://github.com/chjj/blessed)
@@ -31,5 +32,5 @@ blessed is the main dependency for this project. its last commit was in 2016, so
 ### info about spacing
 
 blessed works with terminal rows and columns for spacing. this means that if your terminal is too big or too small the spacing of buttons and boxes will be weird.\
-i'm currently working on a way to adjust the spacing based on terminal size so it will always look good.\
-for now, just resize your terminal window and the spacing will dynamically update.
+this is a limitation of the blessed library and will be fixed in a rewrite in another language.\
+for now just resize your terminal window and the spacing will dynamically update.
